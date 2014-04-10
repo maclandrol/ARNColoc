@@ -99,6 +99,19 @@ k= (str2double(get(handles.coeff, 'String')));
 mrnafile= (get(handles.mrna, 'String'));
 s_ernafile= (get(handles.srna, 'String'));
 as_ernafile= (get(handles.asrna, 'String'));
+
+if(strcmp(as_ernafile, 'Anti-Sens eRNA loc file'))
+    as_ernafile='';
+end
+
+if(strcmp(mrnafile, 'mARN loc file'))
+    mrnafile='';
+end
+
+if(strcmp(s_ernafile, 'Sens eRNA loc file'))
+    s_ernafile='';
+end
+
 mask = (get(handles.mask, 'String'));
 close all;
 ARN_coloc(mask,s_ernafile,as_ernafile, mrnafile,k, threshold);
