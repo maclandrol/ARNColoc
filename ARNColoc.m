@@ -458,6 +458,7 @@ function shift_upload_Callback(hObject, eventdata, handles)
 [file, pathname]= uigetfile({'*.shift','Localize file (.shift)'; '*.*','All (*.*)'}, 'Pick the all the shift files','MultiSelect', 'on');
 set(handles.shift_list, 'String', file);
 handles.pathname=pathname;
+guidata(hObject, handles);
 
 
 
@@ -509,6 +510,7 @@ switch get(eventdata.NewValue,'Tag') % Get Tag of selected object.
     case 'asernaref'
         handles.ref=3;
 end
+guidata(hObject, handles);
 
 
 
