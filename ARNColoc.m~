@@ -130,16 +130,16 @@ if(correction)
     if(handles.ref==1)
         s_ernacorrfile= get_Corr_File(filenames, mrna_type, serna_type, handles.pathname, s_ernafile);
         as_ernacorrfile=get_Corr_File(filenames, mrna_type, aserna_type, handles.pathname, as_ernafile);
-        ARN_coloc(mask, s_ernacorrfile, as_ernacorrfile, mrnafile, k, threshold, pix_size,intronsig, 'Corr_');
+        ARN_coloc(mask, s_ernacorrfile, as_ernacorrfile, mrnafile, k, threshold, pix_size,'Corr_');
         
     elseif(handles.ref==2)
         mrnacorrfile= get_Corr_File(filenames, serna_type, mrna_type, handles.pathname, mrnafile);
         as_ernacorrfile=get_Corr_File(filenames, serna_type, aserna_type, handles.pathname, as_ernafile);
-        ARN_coloc(mask, s_ernafile, as_ernacorrfile, mrnacorrfile, k, threshold, pix_size,intronsig,'Corr_');
+        ARN_coloc(mask, s_ernafile, as_ernacorrfile, mrnacorrfile, k, threshold, pix_size,'Corr_');
     else
         mrnacorrfile= get_Corr_File(filenames, aserna_type, mrna_type, handles.pathname, mrnafile);
         s_ernacorrfile=get_Corr_File(filenames, aserna_type, serna_type, handles.pathname, s_ernafile);
-        ARN_coloc(mask, s_ernacorrfile, as_ernafile, mrnacorrfile, k, threshold, pix_size,intronsig,'Corr_');
+        ARN_coloc(mask, s_ernacorrfile, as_ernafile, mrnacorrfile, k, threshold, pix_size,'Corr_');
     end
 end
 
