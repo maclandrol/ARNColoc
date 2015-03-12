@@ -1,4 +1,4 @@
-function ARN_coloc(imgfile, s_ernafile, as_ernafile, mrnafile, k, threshold, convert, intronsig, prefix)
+function ARN_coloc(imgfile, s_ernafile, as_ernafile, mrnafile, k, threshold, convert, intronsig, prefix, number)
 %ARN_coloc, took 4 to 6 , Use:
 %**ARN_coloc(imgfile, s_ernafile, as_ernafile, mrnafile)
 %**ARN_coloc(imgfile, s_ernafile, as_ernafile, mrnafile,k)
@@ -24,7 +24,7 @@ function ARN_coloc(imgfile, s_ernafile, as_ernafile, mrnafile, k, threshold, con
 % ARN_coloc('mask.tif', 's_eRNA.loc', 'as_eRNA.loc', 'mRNA.loc' )
 
 
-narginchk(4,9);
+narginchk(4,10);
 if ~exist('threshold', 'var') || isempty(threshold)
     threshold=-1;
 end
@@ -44,9 +44,13 @@ if ~exist('prefix', 'var') || isempty(prefix)
     prefix='';
 end
 
+if ~exist('number', 'var') || isempty(number)
+    number=false;
+end
+
 
 img=imread(imgfile);
-disp_img=ind2rgb(gray2ind(im2bw(mat2gray(img),0),255), gray(255));
+disp_img= imcomplement(ind2rgb(gray2ind(im2bw(mat2gray(img),0),255), gray(255)));
 img=bwlabel(im2bw(mat2gray(img),0),4);
 
 %TRouver la nouvelle distribution en intensité des noyaux
@@ -161,20 +165,20 @@ if (~isempty(as_ernafile) &&  ~isempty(mrnafile) && ~isempty(s_ernafile))
 end
 
 if(strcmp(input_type, 'mas'))
-    allInput(img,disp_img,inten_dist, mrna, s_erna, as_erna, s_erna_coloc_as_erna, mrna_coloc_as_erna, three_coloc,mrna_coloc_s_erna, prefix, convert);
+    allInput(img,disp_img,inten_dist, mrna, s_erna, as_erna, s_erna_coloc_as_erna, mrna_coloc_as_erna, three_coloc,mrna_coloc_s_erna, prefix, convert, number);
 elseif (strcmp(input_type, 'ms'))
-    mrna_ernaInput(img,disp_img,inten_dist, mrna, s_erna, mrna_coloc_s_erna, 's_erna', prefix, convert);
+    mrna_ernaInput(img,disp_img,inten_dist, mrna, s_erna, mrna_coloc_s_erna, 's_erna', prefix, convert, number);
 elseif (strcmp(input_type, 'ma'))
-     mrna_ernaInput(img,disp_img,inten_dist, mrna, as_erna, mrna_coloc_as_erna, 'as_erna', prefix, convert);
+     mrna_ernaInput(img,disp_img,inten_dist, mrna, as_erna, mrna_coloc_as_erna, 'as_erna', prefix, convert, number);
 else
-    ernaInput(img, disp_img, inten_dist, s_erna, as_erna, s_erna_coloc_as_erna, prefix);
+    ernaInput(img, disp_img, inten_dist, s_erna, as_erna, s_erna_coloc_as_erna, prefix, number);
 end
 
 end
 
 
 %% Cas de colocalisation a 2 (standard spot1 vs spot2)
-function ernaInput(img, disp_img, inten_dist, s_erna, as_erna, s_erna_coloc_as_erna, prefix)
+function ernaInput(img, disp_img, inten_dist, s_erna, as_erna, s_erna_coloc_as_erna, prefix, number)
 
 data=zeros(length(inten_dist),4);
 data(:,1)=1:length(inten_dist);
@@ -185,7 +189,7 @@ for i=1:length(inten_dist)
     data(i,3)=nnz(s_erna(:,4)==inten_dist(i));
     data(i,4)=nnz(as_erna(:,4)==inten_dist(i));
 end
-write_On_image(disp_img, inten_dist, img);
+write_On_image(disp_img, inten_dist, img, number);
 header={'Nuc','s_erna-as_erna','#s_erna', '#as_erna'};
 writeToFile(data, strcat(prefix,'spot_coloc_analysis.txt'), header);
 
@@ -193,7 +197,7 @@ end
 
 
 %% Cas de colocalisation a 2 (erna, mrna)
-function mrna_ernaInput(img,disp_img,inten_dist, mrna, erna, mrna_coloc_erna, message, prefix, convert)
+function mrna_ernaInput(img,disp_img,inten_dist, mrna, erna, mrna_coloc_erna, message, prefix, convert, number)
 
 %data: 'Nuc', 's_erna-mrna', #mrna	#s_erna
 %trans_data: 'Nuc', 's_erna-mrna', trans_number, nascent_mrna, #s_erna, mRNAnascent_coloc_+message,	#mRNAnascent_noColoc_erna
@@ -221,7 +225,7 @@ for i=1:length(inten_dist)
     trans_data(i,7)= sum(round(trans_wo_erna(trans_wo_erna(:,5)==inten_dist(i),end)));
 end
 
-write_On_image(disp_img, inten_dist, img, mrna(mrna(:,end-1)~=0,1:end));
+write_On_image(disp_img, inten_dist, img, mrna(mrna(:,end-1)~=0,1:end), number);
 header={'Nuc',strcat('mrna-',message),'#mrna', strcat('#',message)};
 writeToFile(data, strcat(prefix,'spot_coloc_analysis.txt'), header);
 header={'Nuc',strcat('t_mrna-',message),'trans_number', 'nascent_mrna',strcat('#',message), strcat('#mRNAnascent_coloc_', message),'#mRNAnascent_noColoc_erna'};
@@ -263,7 +267,7 @@ end
 
 
 %% Cas de colocalisation a 3 (s_erna, as_erna, mrna)
-function allInput(img,disp_img,inten_dist, mrna, s_erna, as_erna, s_erna_coloc_as_erna, mrna_coloc_as_erna, three_coloc,mrna_coloc_s_erna, prefix, convert)
+function allInput(img,disp_img,inten_dist, mrna, s_erna, as_erna, s_erna_coloc_as_erna, mrna_coloc_as_erna, three_coloc,mrna_coloc_s_erna, prefix, convert, number)
 
 mrnaDATA=double([(1:size(mrna,1))' mrna mrna_coloc_s_erna(:,end-1:end) mrna_coloc_as_erna(:,end-1:end)]);
 trans_w_s_erna=mrnaDATA((mrna_coloc_s_erna(:,1)>0 & mrnaDATA(:,end-5)==1),1:end-2);
@@ -299,7 +303,7 @@ for i=1:length(inten_dist)
     
 end
 
-write_On_image(disp_img, inten_dist, img, mrna(mrna(:,end-1)~=0,1:end));
+write_On_image(disp_img, inten_dist, img, mrna(mrna(:,end-1)~=0,1:end), number);
 header={'Nuc','s_erna-as_erna','s_erna-mrna','as_erna-mrna','as_erna-s_erna-mrna', '#mrna', '#s_erna', '#as_erna'};
 writeToFile(data, [prefix,'spot_coloc_analysis.txt'], header);
 header={'Nuc','s_erna-as_erna','s_erna-t_mrna','as_erna-t_mrna','as_erna-s_erna-t_mrna','trans_number', 'nascent_mrna','#s_erna', '#as_erna', '#mRNAnascent_coloc_s_erna', '#mRNAnascent_coloc_as_erna', '#mRNAnascent_noColoc_erna'};
@@ -414,27 +418,41 @@ end
 
 
 %% Ecrire les ids des cellules sur l'image
-function write_On_image(disp_im, towrite, nuc, trans)
+function write_On_image(disp_im, towrite, nuc, trans, number)
 
 %ecrire sur l'image
 f = figure('color','white','units','normalized','position',[.1 .1 .8 .8]);
+tmp_im = rgb2gray(disp_im);
+tmp_im(tmp_im==0 | tmp_im==1) = 0;
+tmp_im = im2bw(tmp_im, 0);
+[im_D, ~] = bwdist(tmp_im);
+
 imagesc(disp_im);
 set(f,'units','pixels','position',[0 0 size(disp_im,1)  size(disp_im,2)],'visible','off')
 %truesize; %this would be great but since it doesn't really work, fuck
 %off
+
 axis off
-for a= 1:length(towrite)
-    [i, j]=(find(nuc==towrite(a,1),1)); % pour retourner les coord x et  y
-    text('position',[j i] , 'FontWeight','bold' ,'fontsize',10,'string',int2str(a)) ;
+if(number)
+    for a= 1:length(towrite)
+        [i, j]=(find(nuc==towrite(a,1))); % pour retourner les coord x et  y
+        idx = sub2ind(size(disp_im), i, j);
+        im_idx = sort(im_D(idx), 'descend');
+        moy = ceil((numel(im_idx)+1)/2);
+        [i,j] = ind2sub(size(disp_im), idx(moy));
+        text('position',[j i] , 'FontWeight','bold' ,'fontsize',10,'string',int2str(a), 'color', [0.5,0.5,0.5]) ;
+    end
 end
 
 if nargin>3
     hold on;
-    plot(trans(:,1),trans(:,2), 'k+', 'MarkerSize', 2);
+    plot(trans(:,1),trans(:,2), '+', 'Color', [235, 197, 91]./255, 'MarkerSize', 3, 'LineWidth', 0.60);
 end
 
 % Capture the text image
-saveas(f, 'final_label', 'png');
+print(f,'-depsc','-r150','final_label')
+
+%saveas(f, 'final_label', 'png');
 
 close(f);
 end

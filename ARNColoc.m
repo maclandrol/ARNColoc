@@ -22,7 +22,7 @@ function varargout = ARNColoc(varargin)
 
 % Edit the above text to modify the response to help ARNColoc
 
-% Last Modified by GUIDE v2.5 17-Feb-2015 14:43:37
+% Last Modified by GUIDE v2.5 12-Mar-2015 17:54:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -117,6 +117,7 @@ end
 mask = (get(handles.mask, 'String'));
 correction= get(handles.correctshift, 'Value')==get(handles.correctshift, 'Max');
 intronsig = get(handles.intron, 'Value') ==get(handles.intron, 'Max');
+label = get(handles.number, 'Value')==get(handles.number, 'Max');
 
 if(correction)
     
@@ -130,21 +131,21 @@ if(correction)
     if(handles.ref==1)
         s_ernacorrfile= get_Corr_File(filenames, mrna_type, serna_type, handles.pathname, s_ernafile);
         as_ernacorrfile=get_Corr_File(filenames, mrna_type, aserna_type, handles.pathname, as_ernafile);
-        ARN_coloc(mask, s_ernacorrfile, as_ernacorrfile, mrnafile, k, threshold, pix_size,intronsig, 'Corr_');
+        ARN_coloc(mask, s_ernacorrfile, as_ernacorrfile, mrnafile, k, threshold, pix_size,intronsig, 'Corr_', label);
         
     elseif(handles.ref==2)
         mrnacorrfile= get_Corr_File(filenames, serna_type, mrna_type, handles.pathname, mrnafile);
         as_ernacorrfile=get_Corr_File(filenames, serna_type, aserna_type, handles.pathname, as_ernafile);
-        ARN_coloc(mask, s_ernafile, as_ernacorrfile, mrnacorrfile, k, threshold, pix_size,intronsig,'Corr_');
+        ARN_coloc(mask, s_ernafile, as_ernacorrfile, mrnacorrfile, k, threshold, pix_size,intronsig,'Corr_', label );
     else
         mrnacorrfile= get_Corr_File(filenames, aserna_type, mrna_type, handles.pathname, mrnafile);
         s_ernacorrfile=get_Corr_File(filenames, aserna_type, serna_type, handles.pathname, s_ernafile);
-        ARN_coloc(mask, s_ernacorrfile, as_ernafile, mrnacorrfile, k, threshold, pix_size,intronsig,'Corr_');
+        ARN_coloc(mask, s_ernacorrfile, as_ernafile, mrnacorrfile, k, threshold, pix_size,intronsig,'Corr_', label);
     end
 end
 
 disp('**ARNColoc without correction**')
-ARN_coloc(mask,s_ernafile,as_ernafile, mrnafile,k, threshold, pix_size, intronsig);
+ARN_coloc(mask,s_ernafile,as_ernafile, mrnafile,k, threshold, pix_size, intronsig, '', label);
 %close all;
 
 
@@ -543,3 +544,12 @@ function intron_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of intron
+
+
+% --- Executes on button press in number.
+function number_Callback(hObject, eventdata, handles)
+% hObject    handle to number (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of number
