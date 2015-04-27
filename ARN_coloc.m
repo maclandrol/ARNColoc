@@ -317,7 +317,7 @@ a=size(trans_w_s_erna,1);
 if(a>0)
     s_ernaData(:,1)=1:a;
     s_ernaData(:,2)=trans_w_s_erna(:,5);
-    s_ernaData(:,3:4)=[trans_w_s_erna(:,4) round(trans_w_s_erna(:,end-1))];
+    s_ernaData(:,3:4)=[trans_w_s_erna(:,4) round(trans_w_s_erna(:,end-2))];
     s_ernaData(:,5)=three_coloc(trans_w_s_erna(:,1));
     s_ernaData(:,6)=trans_w_s_erna(:,end-1).*convert;
     s_ernaData(:,7)= trans_w_s_erna(:,end);
