@@ -234,22 +234,23 @@ writeToFile(trans_data, strcat(prefix,'trans_coloc_analysis.txt'), header);
 %writing trans with erna
 
 header={'mRNA_Trans','nuc' ,'intensity', '#nascent', ['closest_' message,'_dist(nm)'], 'erna #', 'erna intensity', 'erna nascent'};
-as_ernaData= zeros(size(trans_w_erna,1),8);
+ernaData= zeros(size(trans_w_erna,1),8);
 erna_m=single_mean(erna(:,3), 0, 'Single erna intensity');
+trans_pos = find(mrna(:,5) ~=0);
 a=size(trans_w_erna,1);
 if(a>0)
-    as_ernaData(:,1)=1:a;
-    as_ernaData(:,2)=trans_w_erna(:,5);
-    as_ernaData(:,3:4)=[trans_w_erna(:,4) round(trans_w_erna(:,end-2))];
-    as_ernaData(:,5)= trans_w_erna(:,end-1).*convert;
-    as_ernaData(:,6)= trans_w_erna(:,end);
-    as_ernaData(:,7)= erna(trans_w_erna(:,end),3);
-    as_ernaData(:,8)= round(as_ernaData(:,7)./erna_m);
+    ernaData(:,1) = arrayfun(@(x)find(trans_pos==x,1),trans_w_erna(:,1));
+    ernaData(:,2)=trans_w_erna(:,5);
+    ernaData(:,3:4)=[trans_w_erna(:,4) round(trans_w_erna(:,end-2))];
+    ernaData(:,5)= trans_w_erna(:,end-1).*convert;
+    ernaData(:,6)= trans_w_erna(:,end);
+    ernaData(:,7)= erna(trans_w_erna(:,end),3);
+    ernaData(:,8)= round(ernaData(:,7)./erna_m);
 
 end
-writeToFile(as_ernaData,[prefix, 'Trans_with_',message,'_.txt'], header);
-mrnaLocx= [trans_w_erna(:,2:4) as_ernaData(:,4) as_ernaData(:,2)];
-ernaLocx = [erna(trans_w_erna(:,end), 1:3) round(as_ernaData(:,7)./erna_m)  as_ernaData(:,2)];
+writeToFile(ernaData,[prefix, 'Trans_with_',message,'_.txt'], header);
+mrnaLocx= [trans_w_erna(:,2:4) ernaData(:,4) ernaData(:,2)];
+ernaLocx = [erna(trans_w_erna(:,end), 1:3) round(ernaData(:,7)./erna_m)  ernaData(:,2)];
 generate_locx_files(mrnaLocx, [prefix,'mrna.locx']);
 generate_locx_files(ernaLocx, [prefix,'erna.locx']);
 
@@ -262,6 +263,11 @@ if(a>0)
     no_ernaData(:,2:3)=[trans_wo_erna(:,4) round(trans_wo_erna(:,end))];
 end
 writeToFile(no_ernaData,[prefix, 'Trans_without_',message,'_.txt'], header);
+
+trans_header = {'mRNA_trans', 'x', 'y', 'intensity', 'nascent', 'nucleus', 'erna_coloc'};
+transcript_data = [(1:numel(trans_pos))' mrna(trans_pos, [1,2,3,6,4])];
+transcript_data(:, end+1) = mrna_coloc_erna(trans_pos,1);
+writeToFile(transcript_data, 'trans.locx', trans_header);
 
 end
 
@@ -313,9 +319,12 @@ header={'mRNA_Trans','nuc', 'intensity', '#nascent', 'is_also_Coloc with_as-erna
 s_ernaData= zeros(size(trans_w_s_erna,1),9);
 erna_m=single_mean(s_erna(:,3), 0, 'Single s_erna intensity');
 
+trans_pos = find(mrna(:,5) ~=0);
 a=size(trans_w_s_erna,1);
+
 if(a>0)
-    s_ernaData(:,1)=1:a;
+    % with thos map index to global transcription site index
+    s_ernaData(:,1) = arrayfun(@(x)find(trans_pos==x,1),trans_w_s_erna(:,1));
     s_ernaData(:,2)=trans_w_s_erna(:,5);
     s_ernaData(:,3:4)=[trans_w_s_erna(:,4) round(trans_w_s_erna(:,end-2))];
     s_ernaData(:,5)=three_coloc(trans_w_s_erna(:,1));
@@ -337,7 +346,7 @@ as_ernaData= zeros(size(trans_w_as_erna,1),9);
 erna_m=single_mean(s_erna(:,3), 0, 'Single as_erna intensity');
 a=size(trans_w_as_erna,1);
 if(a>0)
-    as_ernaData(:,1)=1:a;
+    as_ernaData(:,1) = arrayfun(@(x)find(trans_pos==x,1),trans_w_as_erna(:,1));
     as_ernaData(:,2)=trans_w_as_erna(:,5);
     as_ernaData(:,3:4)=[trans_w_as_erna(:,4) round(trans_w_as_erna(:,end-2))];
     as_ernaData(:,5)=three_coloc(trans_w_as_erna(:,1));
@@ -364,6 +373,12 @@ if(a>0)
     no_ernaData(:,2:3)=[trans_wo_erna(:,4) round(trans_wo_erna(:,end))];
 end
 writeToFile(no_ernaData,[prefix,'Trans_without_erna.txt'], header);
+trans_header = {'mRNA_trans', 'x', 'y', 'intensity', 'nascents', 'nucleus', 's_erna_coloc', 'as_erna_coloc'};
+%writeToFile(transcript_data, 'trans.locx', transheader);
+
+transcript_data = [(1:numel(trans_pos))' mrna(trans_pos, [1,2,3,6,4])];
+transcript_data(:, end+1:end+2) = [mrna_coloc_s_erna(trans_pos,1) mrna_coloc_as_erna(trans_pos, 1)];
+writeToFile(transcript_data, 'trans.locx', trans_header);
 
 end
 
