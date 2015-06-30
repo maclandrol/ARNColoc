@@ -40,6 +40,10 @@ if ~exist('intronsig', 'var') || isempty(intronsig)
     intronsig=false;
 end
 
+if ~exist('outputfile', 'dir')
+    mkdir('outputfile')
+end
+
 if ~exist('prefix', 'var') || isempty(prefix)
     prefix='';
 end
@@ -235,7 +239,7 @@ writeToFile(trans_data, strcat(prefix,'trans_coloc_analysis.txt'), header);
 
 header={'mRNA_Trans','nuc' ,'intensity', '#nascent', ['closest_' message,'_dist(nm)'], 'erna #', 'erna intensity', 'erna nascent'};
 ernaData= zeros(size(trans_w_erna,1),8);
-erna_m=single_mean(erna(:,3), 0, 'Single erna intensity');
+erna_m=single_mean(erna(:,3), 0, 'erna');
 trans_pos = find(mrna(:,5) ~=0);
 a=size(trans_w_erna,1);
 if(a>0)
@@ -249,9 +253,10 @@ if(a>0)
 
 end
 writeToFile(ernaData,[prefix, 'Trans_with_',message,'_.txt'], header);
-mrnaLocx= [trans_w_erna(:,2:4) ernaData(:,4) ernaData(:,2)];
-ernaLocx = [erna(trans_w_erna(:,end), 1:3) round(ernaData(:,7)./erna_m)  ernaData(:,2)];
-generate_locx_files(mrnaLocx, [prefix,'mrna.locx']);
+%mrnaLocx= [trans_w_erna(:,2:4) ernaData(:,4) ernaData(:,2)];
+%ernaLocx = [erna(trans_w_erna(:,end), 1:3) round(ernaData(:,7)./erna_m)  ernaData(:,2)];
+ernaLocx = [erna erna(:,3)./erna_m];
+generate_locx_files([mrna(:,1:end-2) mrna(:,end)], [prefix,'mrna.locx']);
 generate_locx_files(ernaLocx, [prefix,'erna.locx']);
 
 %Writing trans without erna 
@@ -317,7 +322,7 @@ writeToFile(trans_data, [prefix,'trans_coloc_analysis.txt'], header);
 
 header={'mRNA_Trans','nuc', 'intensity', '#nascent', 'is_also_Coloc with_as-erna', 'closest s-erna dist','s_erna #', 's_erna intensity', 's_erna nascent'};
 s_ernaData= zeros(size(trans_w_s_erna,1),9);
-erna_m=single_mean(s_erna(:,3), 0, 'Single s_erna intensity');
+erna_m=single_mean(s_erna(:,3), 0, 's_erna');
 
 trans_pos = find(mrna(:,5) ~=0);
 a=size(trans_w_s_erna,1);
@@ -334,16 +339,16 @@ if(a>0)
     s_ernaData(:,9)=round(s_ernaData(:,8)./erna_m);
 end
 
-mrnaLocx= [trans_w_s_erna(:,2:4) s_ernaData(:,4) s_ernaData(:,2)];
-ernaLocx = [s_erna(trans_w_s_erna(:,end), 1:3) round(s_ernaData(:,8)./erna_m)  s_ernaData(:,2)];
-generate_locx_files(mrnaLocx, [prefix,'mrna.locx']);
-generate_locx_files(ernaLocx, [prefix,'erna.locx']);
+%mrnaLocx= [trans_w_s_erna(:,2:4) s_ernaData(:,4) s_ernaData(:,2)];
+%sernaLocx = [s_erna(trans_w_s_erna(:,end), 1:3) round(s_ernaData(:,8)./erna_m)  s_ernaData(:,2)];
+sernaLocx = [s_erna s_erna(:,3)./erna_m];
+generate_locx_files(sernaLocx, [prefix,'s_erna.locx']);
 
 writeToFile(s_ernaData,[prefix,'Trans_with_s_erna.txt'], header);
 
 header={'mRNA_Trans', 'nuc', 'intensity', '#nascent', 'is_also_Coloc with_s-erna', 'closest as-erna dist','as_erna #', 'as_erna intensity', 'as_erna nascent'};
 as_ernaData= zeros(size(trans_w_as_erna,1),9);
-erna_m=single_mean(s_erna(:,3), 0, 'Single as_erna intensity');
+erna_m=single_mean(as_erna(:,3), 0, 'as_erna');
 a=size(trans_w_as_erna,1);
 if(a>0)
     as_ernaData(:,1) = arrayfun(@(x)find(trans_pos==x,1),trans_w_as_erna(:,1));
@@ -358,10 +363,12 @@ if(a>0)
 end
 
 
-mrnaLocx= [trans_w_as_erna(:,2:4) as_ernaData(:,4) as_ernaData(:,2)];
-ernaLocx = [as_erna(trans_w_as_erna(:,end), 1:3) round(as_ernaData(:,8)./erna_m)  as_ernaData(:,2)];
-generate_locx_files(mrnaLocx, [prefix,'mrna.locx']);
-generate_locx_files(ernaLocx, [prefix,'erna.locx']);
+%mrnaLocx= [mrnaLocx ;[trans_w_as_erna(:,2:4) as_ernaData(:,4) as_ernaData(:,2)]];
+%asernaLocx = [as_erna(trans_w_as_erna(:,end), 1:3) round(as_ernaData(:,8)./erna_m)  as_ernaData(:,2)];
+asernaLocx = [as_erna as_erna(:,3)./erna_m];
+
+generate_locx_files([mrna(:,1:end-2) mrna(:,end)], [prefix,'mrna.locx']);
+generate_locx_files(asernaLocx, [prefix,'as_erna.locx']);
 
 writeToFile(as_ernaData,[prefix, 'Trans_with_as_erna.txt'], header);
 
@@ -400,9 +407,9 @@ disp('mrna mean single intensity:')
 disp(mean_single)
 disp('mrna overall mean intensity:')
 disp(mean(mrna_int))
-dlmwrite('mrna_low_intensity.txt', mrna_int(idx==single_cat));
-dlmwrite('mrna_high_intensity.txt', mrna_int(idx~=single_cat));
-dlmwrite('mrna_single_intensity.txt', mrna_int(mrna(:,4)==background & idx==single_cat));
+dlmwrite(fullfile('outputfile','mrna_low_intensity.txt'), mrna_int(idx==single_cat));
+dlmwrite(fullfile('outputfile','mrna_high_intensity.txt'), mrna_int(idx~=single_cat));
+dlmwrite(fullfile('outputfile','mrna_single_intensity.txt'), mrna_int(mrna(:,4)==background & idx==single_cat));
 
 
 mrna(:,end+1)=(double(mrna(:,3)/mean_single)>k) & (mrna(:,4)~=background);
@@ -465,7 +472,7 @@ if nargin>3
 end
 
 % Capture the text image
-print(f,'-depsc','-r150','final_label')
+print(f,'-depsc','-r150',fullfile('outputfile','final_label'))
 
 %saveas(f, 'final_label', 'png');
 
@@ -476,6 +483,7 @@ end
 %% Ecrire les données dans un fichier texte en utilisant header pour entête
 function writeToFile(data, outfile, header)
 
+outfile = fullfile('outputfile',outfile);
 fid = fopen(outfile,'w');
 if fid == -1; error('Cannot open file: %s', outfile); end
 fprintf(fid, '%s\t', header{:});
@@ -499,33 +507,36 @@ m2=mean(intensity(idx1==idx1(min_ind)));
 
 idx2=kmeans(intensity, 3);
 m3= mean(intensity(idx2~=idx2(min_ind) & idx2~=idx2(max_ind)));
-disp(message)
+disp(['Single ' message ' intensity']);
 if(method==0)
     hf=figure,
     %hist(intensity);
     binranges = min_int:100:max_int+100;
     [bincounts] = histc(intensity,binranges);
     bar(binranges,bincounts,'histc');
-    prompt = sprintf('Choose the %s calculation method between this 3 methods:\n -mean: %-0.5f\n -kmeans-2-center: %-0.5f\n -kmeans-3-center: %-0.5f\n',message, m1, m2, m3);
-    answ=inputdlg(prompt,[message, ' calculation'],1);
+    prompt = sprintf('Choose the %s calculation method between this 3 methods:\n (1)-mean: %-0.5f\n (2)-kmeans-2-center: %-0.5f\n (3)-kmeans-3-center: %-0.5f\n',['Single ' message ' intensity'], m1, m2, m3);
+    answ=inputdlg(prompt,['Single ' message ' intensity calculation'],1);
     if isempty(answ)
         method=1;
     else
         method= str2double(answ{1});
+        if ~nnz([1,2,3]==method)
+            method=1;
+        end
     end
     close(hf);
 end
 
 if method==2
     m=m2;
-    dlmwrite('k2_erna_low_intensity.txt', intensity(idx1==idx1(min_ind)));
-    dlmwrite('k2_erna_high_intensity.txt', intensity(idx1==idx1(max_ind)));
+    dlmwrite(fullfile('outputfile',['k2_' message '_low_intensity.txt']), intensity(idx1==idx1(min_ind)));
+    dlmwrite(fullfile('outputfile',['k2_' message '_high_intensity.txt']), intensity(idx1==idx1(max_ind)));
 
 elseif method==2
     m=m3;
-    dlmwrite('k3_erna_low_intensity.txt', intensity(idx2==idx2(min_ind)));
-    dlmwrite('k3_erna_high_intensity.txt', intensity(idx2==idx2(max_ind)));
-    dlmwrite('k3_erna_middle_intensity.txt', intensity(idx2~=idx2(min_ind) & idx2~=idx2(max_ind)));
+    dlmwrite(fullfile('outputfile',['k3_' message '_low_intensity.txt']), intensity(idx2==idx2(min_ind)));
+    dlmwrite(fullfile('outputfile',['k3_' message '_high_intensity.txt']), intensity(idx2==idx2(max_ind)));
+    dlmwrite(fullfile('outputfile',['k3_' message '_middle_intensity.txt']), intensity(idx2~=idx2(min_ind) & idx2~=idx2(max_ind)));
 
 else
     m=m1;
@@ -537,7 +548,7 @@ end
 function generate_locx_files(data, filename)
 % the locx file is a extension of the loc file
 % the format is the following: X Y INT NASC NUC
-dlmwrite(filename, data,'delimiter', '\t', '-append');
+dlmwrite(fullfile('outputfile', filename), data,'delimiter', '\t');
 end
 
 

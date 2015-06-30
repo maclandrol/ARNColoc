@@ -456,7 +456,7 @@ function shift_upload_Callback(hObject, eventdata, handles)
 % hObject    handle to shift_upload (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[file, pathname]= uigetfile({'*.shift','Localize file (.shift)'; '*.*','All (*.*)'}, 'Pick the all the shift files','MultiSelect', 'on');
+[file, pathname]= uigetfile({'*.shift','Localize file (.shift)'; '*.*','All (*.*)'}, 'Pick all the shift files at the same time','MultiSelect', 'on');
 set(handles.shift_list, 'String', file);
 handles.pathname=pathname;
 guidata(hObject, handles);
