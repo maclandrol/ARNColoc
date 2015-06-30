@@ -59,11 +59,11 @@ ARNColoc is the main script for RNA quantification.
     3. **[Optional]** Set the transcription site coefficient (**_tc_**). This value will be use to define transcription sites. A spot will be considered as transcription site if :
     <div align="center">Intensity<sub>spot</sub> > Intensity<sub>single</sub> x <em><strong>tc</strong></em></div>
 The default value is 1.5
-    4. **[Optional]** Set the intensity threshold to discard any spot with intensity lower than your threshold. This is useful when you suspect that there are a lot of noise in your loc file. The intensity distribution shown when loading each loc file should be helpful in setting a threshold. Keep in mind that this threshold will be applied to all your input file.
-    5. **[Optional]** Set the pixel size (in nm). You can obtain this value from your microscope specs. In case of rectangular pixel, enter the average value of of the length and width provided by the specs.
+    4. **[Optional]** Set the intensity threshold to discard any spot with intensity lower than your threshold. This is useful when you suspect that there are a lot of noise in your loc file. The intensity distribution shown when loading each loc file should be helpful in setting a threshold. Keep in mind that this threshold will be applied to all your inputloc  files.
+    5. **[Optional]** Set the pixel size (in nm). You can obtain this value from your microscope specs. In case of rectangular pixel, enter the average value of the length and width provided by the specs.
     6. **[Optional]** If you need to correct for pixel shifting, check  **"Pixel shift"**, upload you shift files (see [Shift](#shift)) and select the reference for the pixel shift correction (**"Shift Ref"**). Two analyses will be performed. One with your input files and another with the corrected version.
     <p> <img src="https://cloud.githubusercontent.com/assets/5290110/8384567/de050c94-1c0f-11e5-87a4-499b00dbb55a.png" /></p>
-    7. If you have intronic signal (single mRNA are mostly expected to be found out of the nuclei), check **"Intron signal"**
+    7. If you have intronic signal (single mRNA are mostly expected to be found only out of the nuclei), check **"Intron signal"**
     8. Check **"Label Nucleus"** to label each nucleus by a number.
     9. Press **OK**.
   
@@ -75,15 +75,14 @@ The default value is 1.5
     **Enter the chosen method number (1, 2 or 3) and press OK**.
     <p> <img src="https://cloud.githubusercontent.com/assets/5290110/8384569/de065c70-1c0f-11e5-9a44-e9f7153959ae.png" /></p>
 
-    Some steps could be repeated for each RNA type. Please check each dialog box title to avoid being confused.
+    **Some steps could be repeated for each RNA type. Please check the dialog box title to avoid being confused.**
   
-    **Output file can be found in the folder from which you execute ARNColoc**
+    **ARNColoc save your output files in a folder named 'outputfile'**
     
     * ##### Output
     
-     *  mrna.locx file : Custom loc file containing information about mRNA transcription site that colocalize either with s_erna or as_erna (last two columns add the number of nascent RNA per spot and which nucleus is the spot found in)
-     * s\_erna.locx and as_erna.locx : Custom loc file about s\_eRNA or as_eRNA that colocalize with mRNA transcription site. 
-     * trans.locx : Custom file with informations about each transcription site. I plan to use this file later to diplay transcription site on ImageJ / Imaris
+     *  mrna.locx  s\_erna.locx and as\_erna.locx  file : Custom loc file containing information about each spot (position x ,position y , intensity, nucleus, number of nascent) 
+     * trans.locx : Custom file with informations about each transcription site (position x	position y	intensity	nascents	nucleus	number of s\_erna  and number of as\_erna that colocalize with the transcription site	). I plan to use this file later to diplay transcription site on ImageJ / Imaris
      * Trans\_with\_s\_erna_.txt : A tsv file containing transcription file that colocalize with sense eRNA spots. 
      * Trans\_with\_as\_erna.txt :  A tsv file containing transcription file that colocalize with anti-sense eRNA spots. 
      * Trans\_without\_erna.txt :  A tsv file containing transcription file that do not colocalize with any eRNA spots. 
@@ -91,7 +90,7 @@ The default value is 1.5
      * spot\_coloc\_analysis.txt : A tsv file containing detailled information for each nucleus about spot colocalisation
      * Corr\* files :  outputs for after correcting for pixel shift.
      * An output image with each nucleus labeled for easy recognition (mRNA spot are marked as red spots, s\_eRNA as blue spots and as_eRNA as green spots)
-     ![final label](https://cloud.githubusercontent.com/assets/5290110/8384638/662cea60-1c10-11e5-8311-f53dbb09a850.png)
+     ![final label](example/output/final_label.png)
 
 
 
