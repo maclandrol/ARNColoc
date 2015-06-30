@@ -81,9 +81,8 @@ The default value is 1.5
     
     * ##### Output
     
-     *  mrna.locx file : Custom loc file containing information about mRNA transcription site that colocalize either with s_erna or as_erna (last two columns add the number of nascent RNA per spot and which nucleus is the spot found in)
-     * s\_erna.locx and as_erna.locx : Custom loc file about s\_eRNA or as_eRNA that colocalize with mRNA transcription site. 
-     * trans.locx : Custom file with informations about each transcription site. I plan to use this file later to diplay transcription site on ImageJ / Imaris
+     *  mrna.locx  s\_erna.locx and as\_erna.locx  file : Custom loc file containing information about each spot (position x ,position y , intensity, nucleus, number of nascent) 
+     * trans.locx : Custom file with informations about each transcription site (position x	position y	intensity	nascents	nucleus	number of s\_erna  and number of as\_erna that colocalize with the transcription site	). I plan to use this file later to diplay transcription site on ImageJ / Imaris
      * Trans\_with\_s\_erna_.txt : A tsv file containing transcription file that colocalize with sense eRNA spots. 
      * Trans\_with\_as\_erna.txt :  A tsv file containing transcription file that colocalize with anti-sense eRNA spots. 
      * Trans\_without\_erna.txt :  A tsv file containing transcription file that do not colocalize with any eRNA spots. 
@@ -91,7 +90,7 @@ The default value is 1.5
      * spot\_coloc\_analysis.txt : A tsv file containing detailled information for each nucleus about spot colocalisation
      * Corr\* files :  outputs for after correcting for pixel shift.
      * An output image with each nucleus labeled for easy recognition (mRNA spot are marked as red spots, s\_eRNA as blue spots and as_eRNA as green spots)
-     ![final label](https://cloud.githubusercontent.com/assets/5290110/8384638/662cea60-1c10-11e5-8311-f53dbb09a850.png)
+     ![final label](example/output/final_label.png)
 
 
 
