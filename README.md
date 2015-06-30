@@ -19,7 +19,13 @@ The following tutorial describe step by step the use of ARNColoc to perform RNA 
    ![Shift interface](https://cloud.githubusercontent.com/assets/5290110/8384572/de0fc13e-1c0f-11e5-86a1-e584d03991ae.png)  
 
    * #### Input  
-    The only input files are loc files. Loc files are the usual output of spot detection programs (Airlocalize for 3D, Localize for 2D) and contains each spot coordinates and its intensity. In order to use **Shift** you need to perform spot detection using high resolution reference image obtained for each channel.
+    The only input files are loc files. Loc files are the usual output of spot detection programs (Airlocalize for 3D, Localize for 2D) and contains each spot coordinates and its intensity. In order to use **Shift** you need to perform spot detection using high resolution reference images obtained for each channel. 
+   
+   * #### Input data acquisition using Tetraspek bead images
+   Cornelia Zorca from the Zenklusen lab provide a way of acquiring input data using Tetraspek bead images and Localize for spots detection :
+      1. Take several Tetraspek bead images for pixel shift correction. (Tetraspek bead dilution 1/100 in TAP water; place 5ul/slide). 
+      2. Open Tetraspek bead images in FIJI. Make maximum projections for each chanel (Cy3; Cy3.5 and Cy5). 
+      3. Localize the spots on Tetraspek bead images using LOCALIZE.
           
    * #### Running
     Move to the directory containing the script and execute the **Shift.m** script (just type **Shift** in your matlab interpreter). The graphical interface should appear.
@@ -27,14 +33,16 @@ The following tutorial describe step by step the use of ARNColoc to perform RNA 
     1. Use the browse button to upload your file for each channel (in red)
     2. Use the channel marker to select the corresponding channel for each loc file (in blue)
     3. Select you input type. Use 2D for a 2D loc file from localize and 3D for 3D loc file from Airlocalize.  
-    4. Choose the file you want to correct from your two input file. The other channel will be used as reference for the pixel shift detection (in green).
+    4. **[Optional]** Choose the file you want to correct from your two input files. The other channel will be used as reference for the pixel shifting (in green).
     <p> <img src="https://cloud.githubusercontent.com/assets/5290110/8384573/de124b98-1c0f-11e5-979c-4ea79d7a039d.png" /></p>
     5. Use the distance slider to set a limit on shfit between pixel. This is useful for pixel pairing when spots are found in one file and not the other. 
     <p> <img src="https://cloud.githubusercontent.com/assets/5290110/8384570/de08d46e-1c0f-11e5-979d-c368ada63cc7.png" /></p>  
   
     6. Click on the "OK" button !
         
-    A **.shift** file containing informations about the pixel shift will be saved in your folder. This file can be used in ARNColoc to correct for pixel shifting in order to provide more accurate results.
+    A **.shift** file containing informations about the pixel shift will be saved in your folder. This editable file can be used in ARNColoc to correct for pixel shifting in order to provide more accurate results. It's format is really simple.
+    <p align="center">ref_channel - other_channel<br>mean-x-shift mean-y-shift</p>
+    The refence channel being the one with the most spots. You should also reuse the same shift file in ARNColoc for data obtained from the same experiment.
         
 * * *
 
@@ -42,17 +50,17 @@ The following tutorial describe step by step the use of ARNColoc to perform RNA 
 
 ARNColoc is the main script for RNA quantification.  
    * #### Input  
-     * Segmentation file (nucleus mask)
+     * Segmentation file (nucleus mask). You can obtained a segmented image by manually circling the dapi signal after a 2D max projection in ImageJ or using an automatic segmentation tool like CellProfiler. 
 
         ![mask file](example/input/mask_for_display.png)
         
      * At least 2 loc files ([mrna](example/input/mRNA.loc), [erna_1](example/input/s_eRNA.loc) or [erna_2](example/input/as_eRNA.loc))
 
-  
+
    * #### Run
     Execute the **ARNColoc** script in matlab by typing **ARNColoc** in you matlab interpreter. You might need to move to the directory containing the script ot set it as your matlab home directory.  
    
-    1. Load your segmented image (nucleus mask). You can obtained a segmented image by manually circling the dapi signal in ImageJ or using an automatic segmentation tool like CellProfiler. You image will be displayed on  *the intensity_plot frame*.
+    1. Load your segmented image (nucleus mask). Your image will be displayed on  *the intensity_plot frame*.
     <p> <img src="https://cloud.githubusercontent.com/assets/5290110/8384563/ddfcfed2-1c0f-11e5-99f0-451ffdb14857.png" /></p>
     2. Load each of your loc files using the browse button and select the corresponding channel of acquisition. ARNColoc use cyanine dyes as label for color channels. For each loc file, the intensity distribution of the spot will be displayed on the *intensity_prot frame*.
     <p> <img src="https://cloud.githubusercontent.com/assets/5290110/8384564/ddfd6804-1c0f-11e5-94d4-5f86b83dc7b2.png" /></p> 
