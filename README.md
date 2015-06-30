@@ -22,7 +22,7 @@ The following tutorial describe step by step the use of ARNColoc to perform RNA 
     The only input files are loc files. Loc files are the usual output of spot detection programs (Airlocalize for 3D, Localize for 2D) and contains each spot coordinates and its intensity. In order to use **Shift** you need to perform spot detection using high resolution reference images obtained for each channel. 
    
    * #### Input data acquisition using Tetraspek bead images
-   Cornelia Zorca from the Zenklusen lab provide a way of acquiring input data using Tetraspek bead images and Localize for spots detection :
+   Cornelia Zorca from Zenklusen lab provide a way of acquiring input data using Tetraspek bead images and Localize for spots detection :
       1. Take several Tetraspek bead images for pixel shift correction. (Tetraspek bead dilution 1/100 in TAP water; place 5ul/slide). 
       2. Open Tetraspek bead images in FIJI. Make maximum projections for each chanel (Cy3; Cy3.5 and Cy5). 
       3. Localize the spots on Tetraspek bead images using LOCALIZE.
