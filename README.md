@@ -89,7 +89,7 @@ The default value is 1.5
      * Trans\_coloc\_analysis.txt : A tsv file containing detailled information for each nucleus about transcription site colocalisation
      * spot\_coloc\_analysis.txt : A tsv file containing detailled information for each nucleus about spot colocalisation
      * Corr\* files :  outputs for after correcting for pixel shift.
-     * An output image with each nucleus labeled for easy recognition (mRNA spot are marked as red spots, s\_eRNA as blue spots and as_eRNA as green spots)
+     * An output image with each nucleus labeled (if 'Label Nucleus' was checked)  for easy recognition (mRNA spot are marked as red spots, s\_eRNA as blue spots, as\_eRNA as green spots and a yellow '+' sign is used to show transcription site).
      ![final label](example/output/final_label.png)
 
 
