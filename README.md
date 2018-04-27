@@ -65,7 +65,7 @@ ARNColoc is the main script for RNA quantification.
 
 
    * #### Run
-    Execute the **ARNColoc** script in matlab by typing **ARNColoc** in you matlab interpreter. You might need to move to the directory containing the script ot set it as your matlab home directory.  
+   Execute the **ARNColoc** script in matlab by typing **ARNColoc** in you matlab interpreter. You might need to move to the directory containing the script ot set it as your matlab home directory.  
    
   1. Load your segmented image (nucleus mask). Your image will be displayed on  *the intensity_plot frame*.
   
@@ -87,18 +87,18 @@ The default value is 1.5
   
   ![](http://cloud.githubusercontent.com/assets/5290110/8384567/de050c94-1c0f-11e5-87a4-499b00dbb55a.png)
   
-  7. If you have intronic signal (single mRNA are mostly expected to be found only out of the nuclei), check **"Intron signal"**
+  7. If you have intronic signal (single mRNA are mostly expected to be found only out of the nucleus), check **"Intron signal"**
   
   8. Check **"Label Nucleus"** to label each nucleus by a number.
   
   9. Press **OK**.
   
-   You will be asked to provided a colocalization radius (in nm) between spot from each pair of RNA type. o perform colocalisation, a RNA type will be used as reference. Use the slider to select a radius you deem appropriate. Spots will only colocalize in this radius. Press OK when you're done.
+  You will be asked to provided a colocalization radius (in nm) between spot from each pair of RNA type. o perform colocalisation, a RNA type will be used as reference. Use the slider to select a radius you deem appropriate. Spots will only colocalize in this radius. Press OK when you're done.
      
    ![](https://cloud.githubusercontent.com/assets/5290110/8384566/de0497d2-1c0f-11e5-9674-f898d9469179.png)
 
   
-    After that you will be asked to select a method to compute single spot intensity for each eRNA file (sense vs anti-sense). Three methods are proposed. **(1)** mean intensity of every spot, **(2)** A 2-means intensity clustering and a **(3)** 3-means intensity clustering. 2-means clustering use a k-means clustering with 2 centroids to assign your spot in two clusters based on their intensity. The mean intensity of the cluster with the lower intensities will be used as single eRNA intensity. 3-means clustering use the cluster with intermediate intensities to comptute single eRNA intensity. Depending on you data the 3-means clustering will sometimes give inapropriate high values. Please use the intensity distribution shown to decide which method suit you data best. You should verify where the single eRNA intensity computed by each method fit in the distribution and see if that make sense. 
+   After that you will be asked to select a method to compute single spot intensity for each eRNA file (sense vs anti-sense). Three methods are proposed. **(1)** mean intensity of every spot, **(2)** A 2-means intensity clustering and a **(3)** 3-means intensity clustering. 2-means clustering use a k-means clustering with 2 centroids to assign your spot in two clusters based on their intensity. The mean intensity of the cluster with the lower intensities will be used as single eRNA intensity. 3-means clustering use the cluster with intermediate intensities to comptute single eRNA intensity. Depending on you data the 3-means clustering will sometimes give inapropriate high values. Please use the intensity distribution shown to decide which method suit you data best. You should verify where the single eRNA intensity computed by each method fit in the distribution and see if that make sense. 
   
     **Enter the chosen method number (1, 2 or 3) and press OK**.
 
